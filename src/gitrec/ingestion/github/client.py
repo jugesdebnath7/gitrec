@@ -1,3 +1,3 @@
-class GitHubClient:
-    def __init__(self):
-        pass
+# client.py
+
+import logging

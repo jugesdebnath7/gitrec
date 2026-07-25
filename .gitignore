@@ -1,0 +1,73 @@
+# ----------------------
+# Python
+# ----------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ----------------------
+# Virtual Environments
+# ----------------------
+.venv/
+venv/
+env/
+
+# ----------------------
+# IDE / Editor
+# ----------------------
+.vscode/
+.idea/
+
+# ----------------------
+# Environment Variables
+# ----------------------
+.env
+.env.*
+
+# ----------------------
+# Logs
+# ----------------------
+*.log
+
+# ----------------------
+# OS Files
+# ----------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------
+# Build / Packaging
+# ----------------------
+build/
+dist/
+*.egg-info/
+
+# ----------------------
+# Testing
+# ----------------------
+.pytest_cache/
+.coverage
+
+# ----------------------
+# Database (if local)
+# ----------------------
+*.db
+*.sqlite3
+
+# ----------------------
+# Artifacts (Models, outputs)
+# ----------------------
+artifacts/
+*.pkl
+*.pt
+
+# ----------------------
+# Jupyter (if used)
+# ----------------------
+.ipynb_checkpoints/
+
+# ----------------------
+# Misc
+# ----------------------
+# scaffold.py   # optional (keep only if not needed in repo)

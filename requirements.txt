@@ -1,0 +1,28 @@
+# HTTP / API
+httpx
+fastapi
+uvicorn
+
+# Data
+numpy
+pandas
+
+# Database
+sqlalchemy
+psycopg2-binary
+alembic
+
+# ML
+torch
+scikit-learn
+
+# Config & Validation
+pydantic
+pydantic-settings
+python-dotenv
+
+# Logging
+loguru
+
+# Testing
+pytest
