@@ -9,6 +9,7 @@ pandas
 
 # Database
 sqlalchemy
+sqlmodel
 psycopg2-binary
 alembic
 

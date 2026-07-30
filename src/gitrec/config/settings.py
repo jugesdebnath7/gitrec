@@ -1,4 +1,4 @@
-# settings.py
+# src/gitrec/config/settings.py
 
 from functools import lru_cache
 from typing import Optional, Literal
