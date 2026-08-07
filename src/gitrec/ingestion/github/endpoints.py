@@ -1,61 +1,241 @@
+# src/gitrec/ingestion/github/endpoints.py
+
 """
-GitHub API endpoint builders.
+GitHub REST API endpoint builders.
 
-Provides centralized GitHub API route definitions used by
-the ingestion layer.
+This module provides immutable endpoint builders for GitHub REST API resources
+used by the ingestion layer.
 
-This module only constructs endpoint paths. It does not:
+Responsibilities
+----------------
+This module is responsible only for constructing endpoint paths.
+
+It does not:
+
 - perform HTTP requests
-- handle authentication
-- transform responses
+- authenticate requests
+- serialize or deserialize payloads
+- validate API responses
+- implement retries, pagination, or rate limiting
+
+Examples
+--------
+>>> repo = repository("psf", "requests")
+>>> repo.base
+'/repos/psf/requests'
+
+>>> repo.languages
+'/repos/psf/requests/languages'
+
+>>> repo.commit("main")
+'/repos/psf/requests/commits/main'
+
+>>> user = user("octocat")
+>>> user.starred
+'/users/octocat/starred'
 """
 
 from __future__ import annotations
 
-
-SEARCH_REPOSITORIES = "/search/repositories"
-
-
-def repository(owner: str, repo: str) -> str:
-    """Return repository details endpoint."""
-    return f"/repos/{owner}/{repo}"
+from dataclasses import dataclass, field
+from enum import StrEnum
 
 
-def repository_topics(owner: str, repo: str) -> str:
-    """Return repository topics endpoint."""
-    return f"/repos/{owner}/{repo}/topics"
+__all__ = [
+    "SearchEndpoint",
+    "RepositoryEndpoints",
+    "UserEndpoints",
+    "repository",
+    "user",
+]
 
 
-def repository_languages(owner: str, repo: str) -> str:
-    """Return repository languages endpoint."""
-    return f"/repos/{owner}/{repo}/languages"
+class SearchEndpoint(StrEnum):
+    """GitHub search API endpoints."""
+
+    REPOSITORIES = "/search/repositories"
+    USERS = "/search/users"
+    CODE = "/search/code"
+    ISSUES = "/search/issues"
+    COMMITS = "/search/commits"
 
 
-def repository_contributors(owner: str, repo: str) -> str:
-    """Return repository contributors endpoint."""
-    return f"/repos/{owner}/{repo}/contributors"
+@dataclass(frozen=True, slots=True)
+class _EndpointBuilder:
+    """Base class for endpoint builders."""
+
+    _base: str = field(init=False, repr=False)
+
+    @property
+    def base(self) -> str:
+        """Base endpoint."""
+        return self._base
+
+    def _join(self, *parts: str) -> str:
+        """Append path segments to the base endpoint."""
+        return "/".join((self.base, *parts))
 
 
-def repository_commits(owner: str, repo: str) -> str:
-    """Return repository commits endpoint."""
-    return f"/repos/{owner}/{repo}/commits"
+@dataclass(frozen=True, slots=True)
+class RepositoryEndpoints(_EndpointBuilder):
+    """GitHub REST endpoints for a repository."""
+
+    owner: str
+    repo: str
+
+    def __post_init__(self) -> None:
+        if not self.owner:
+            raise ValueError("owner cannot be empty")
+
+        if not self.repo:
+            raise ValueError("repo cannot be empty")
+
+        object.__setattr__(
+            self,
+            "_base",
+            f"/repos/{self.owner}/{self.repo}",
+        )
+
+    #
+    # Collection endpoints
+    #
+
+    @property
+    def topics(self) -> str:
+        return self._join("topics")
+
+    @property
+    def languages(self) -> str:
+        return self._join("languages")
+
+    @property
+    def contributors(self) -> str:
+        return self._join("contributors")
+
+    @property
+    def commits(self) -> str:
+        return self._join("commits")
+
+    @property
+    def releases(self) -> str:
+        return self._join("releases")
+
+    @property
+    def branches(self) -> str:
+        return self._join("branches")
+
+    @property
+    def tags(self) -> str:
+        return self._join("tags")
+
+    @property
+    def issues(self) -> str:
+        return self._join("issues")
+
+    @property
+    def pulls(self) -> str:
+        return self._join("pulls")
+
+    @property
+    def forks(self) -> str:
+        return self._join("forks")
+
+    @property
+    def stargazers(self) -> str:
+        return self._join("stargazers")
+
+    @property
+    def subscribers(self) -> str:
+        return self._join("subscribers")
+
+    @property
+    def readme(self) -> str:
+        return self._join("readme")
+
+    #
+    # Parameterized endpoints
+    #
+
+    def commit(self, sha: str) -> str:
+        return self._join("commits", sha)
+
+    def branch(self, name: str) -> str:
+        return self._join("branches", name)
+
+    def release(self, release_id: int | str) -> str:
+        return self._join("releases", str(release_id))
+
+    def issue(self, number: int) -> str:
+        return self._join("issues", str(number))
+
+    def pull_request(self, number: int) -> str:
+        return self._join("pulls", str(number))
+
+    def contents(self, path: str = "") -> str:
+        if path:
+            return self._join("contents", path)
+
+        return self._join("contents")
 
 
-def repository_releases(owner: str, repo: str) -> str:
-    """Return repository releases endpoint."""
-    return f"/repos/{owner}/{repo}/releases"
+@dataclass(frozen=True, slots=True)
+class UserEndpoints(_EndpointBuilder):
+    """GitHub REST endpoints for a user."""
+
+    username: str
+
+    def __post_init__(self) -> None:
+        if not self.username:
+            raise ValueError("username cannot be empty")
+
+        object.__setattr__(
+            self,
+            "_base",
+            f"/users/{self.username}",
+        )
+
+    @property
+    def profile(self) -> str:
+        return self.base
+
+    @property
+    def repositories(self) -> str:
+        return self._join("repos")
+
+    @property
+    def starred(self) -> str:
+        return self._join("starred")
+
+    @property
+    def followers(self) -> str:
+        return self._join("followers")
+
+    @property
+    def following(self) -> str:
+        return self._join("following")
+
+    @property
+    def organizations(self) -> str:
+        return self._join("orgs")
+
+    @property
+    def gists(self) -> str:
+        return self._join("gists")
+
+    @property
+    def events(self) -> str:
+        return self._join("events")
+
+    @property
+    def received_events(self) -> str:
+        return self._join("received_events")
 
 
-def user(username: str) -> str:
-    """Return user profile endpoint."""
-    return f"/users/{username}"
+def repository(owner: str, repo: str) -> RepositoryEndpoints:
+    """Create a repository endpoint builder."""
+    return RepositoryEndpoints(owner, repo)
 
 
-def user_repositories(username: str) -> str:
-    """Return user repositories endpoint."""
-    return f"/users/{username}/repos"
-
-
-def user_starred_repositories(username: str) -> str:
-    """Return user starred repositories endpoint."""
-    return f"/users/{username}/starred"
+def user(username: str) -> UserEndpoints:
+    """Create a user endpoint builder."""
+    return UserEndpoints(username)
