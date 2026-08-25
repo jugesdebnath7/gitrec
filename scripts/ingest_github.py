@@ -16,16 +16,25 @@ def main():
     settings = get_settings()
 
     with GitHubClient(settings=settings) as github_client:
-        github_search = GitHubSearch(github_client=github_client)
 
-        resource_loader = ResourceLoader(github_client=github_client)
+        github_search = GitHubSearch(
+            client=github_client,
+        )
 
-        repository_loader = RepositoryLoader(resource_loader=resource_loader)
-        user_loader = UserLoader(resource_loader=resource_loader)
+        resource_loader = ResourceLoader(
+            client=github_client,
+        )
 
+        repository_loader = RepositoryLoader(
+            resource_loader=resource_loader,
+        )
+
+        user_loader = UserLoader(
+            resource_loader=resource_loader,
+        )
 
         github_loader = GitHubLoader(
-            repository_loader=repository_loader,
+            repo_loader=repository_loader,
             user_loader=user_loader,
         )
 
@@ -33,6 +42,7 @@ def main():
             github_search=github_search,
             github_loader=github_loader,
         )
+        
         service.run()
 
 

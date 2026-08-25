@@ -34,7 +34,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any, TypeAlias
 
-from gitrec.ingestion.github.client import GitHubClient, JSON
+from src.gitrec.ingestion.github.client import GitHubClient, JSON
 
 from .endpoints import SearchEndpoint
 
@@ -56,29 +56,29 @@ class GitHubSearch:
     def repositories(self, query: QueryParams) -> JSON:
         return self._client.get(
             SearchEndpoint.REPOSITORIES,
-            query,
+            params=query,
         )
 
     def users(self, query: QueryParams) -> JSON:
         return self._client.get(
             SearchEndpoint.USERS,
-            query,
+            params=query,
         )
 
     def code(self, query: QueryParams) -> JSON:
         return self._client.get(
             SearchEndpoint.CODE,
-            query,
+            params=query,
         )
 
     def issues(self, query: QueryParams) -> JSON:
         return self._client.get(
             SearchEndpoint.ISSUES,
-            query,
+            params=query,
         )
 
     def commits(self, query: QueryParams) -> JSON:
         return self._client.get(
             SearchEndpoint.COMMITS,
-            query,
+            params=query,
         )

@@ -6,8 +6,8 @@ from typing import Any, Literal, Self
 
 import httpx
 
-from gitrec.config.settings import Settings
-from gitrec.core.exceptions import (
+from src.gitrec.config.settings import Settings
+from src.gitrec.core.exceptions import (
     APITimeoutError,
     GitHubAPIError,
     NetworkError,
@@ -60,7 +60,7 @@ class GitHubClient:
         self._settings = settings
 
         self._client = httpx.Client(
-            base_url=self._settings.github.base_url,
+            base_url=str(self._settings.github.base_url),
             headers=self._headers(),
             follow_redirects=True,
             timeout=self._settings.http.timeout,
@@ -83,7 +83,7 @@ class GitHubClient:
             "X-GitHub-Api-Version": "2022-11-28",
         }
 
-        token = self._settings.github.token_value()
+        token = self._settings.github.token_value
 
         if token:
             headers["Authorization"] = f"Bearer {token}"

@@ -140,13 +140,26 @@ class RepositoryEndpoints(_EndpointBuilder):
     def forks(self) -> str:
         return self._join("forks")
 
-    @property
-    def stargazers(self) -> str:
-        return self._join("stargazers")
+    # The following GitHub's recent policy regarding their platform's public APIs
 
-    @property
-    def subscribers(self) -> str:
-        return self._join("subscribers")
+    """
+    Access to the following public API endpoints will be limited to admins and collaborators:
+
+    List stargazers endpoint: /repos/{owner}/{repo}/stargazers
+    List watchers endpoint: /repos/{owner}/{repo}/subscribers
+
+    We will deprecate the endpoint and remove access to the underlying information:
+
+    List repositories watched by a user endpoint: /users/{username}/subscriptions
+    """
+
+    # @property
+    # def stargazers(self) -> str:
+    #     return self._join("stargazers")
+
+    # @property
+    # def subscribers(self) -> str:
+    #     return self._join("subscribers")
 
     @property
     def readme(self) -> str:

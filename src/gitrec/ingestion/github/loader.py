@@ -13,14 +13,14 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from gitrec.core.exceptions import (
+from src.gitrec.core.exceptions import (
     APITimeoutError,
     GitHubAPIError,
     NetworkError,
     NotFoundError,
     RateLimitError,
 )
-from gitrec.ingestion.github.client import GitHubClient, JSON
+from src.gitrec.ingestion.github.client import GitHubClient, JSON
 
 from .endpoints import RepositoryEndpoints, UserEndpoints
 
@@ -124,7 +124,7 @@ class RepositoryLoader:
 
     def load(
         self,
-        repository: RepositoryEndpoints,
+        repo_endpoint: RepositoryEndpoints,
     ) -> LoaderResult:
         """
         Load repository resources.
@@ -138,26 +138,18 @@ class RepositoryLoader:
         """
         return self._resource_loader.load_resources(
             {
-                "repository": repository.base,
-                "topics": repository.topics,
-                "languages": repository.languages,
-                "contributors": repository.contributors,
-                "commits": repository.commits,
-                "releases": repository.releases,
-                "branches": repository.branches,
-                "tags": repository.tags,
-                "issues": repository.issues,
-                "pulls": repository.pulls,
-                "forks": repository.forks,
-                "stargazers": repository.stargazers,
-                "subscribers": repository.subscribers,
-                "readme": repository.readme,
-                "commit": repository.commit,
-                "branch": repository.branch,
-                "release": repository.release,
-                "issue": repository.issue,
-                "pull_request": repository.pull_request,
-                "contents": repository.contents,
+                "repository": repo_endpoint.base,
+                "topics": repo_endpoint.topics,
+                "languages": repo_endpoint.languages,
+                "contributors": repo_endpoint.contributors,
+                "commits": repo_endpoint.commits,
+                "releases": repo_endpoint.releases,
+                "branches": repo_endpoint.branches,
+                "tags": repo_endpoint.tags,
+                "issues": repo_endpoint.issues,
+                "pulls": repo_endpoint.pulls,
+                "forks": repo_endpoint.forks,
+                "readme": repo_endpoint.readme,
             }
         )
 
