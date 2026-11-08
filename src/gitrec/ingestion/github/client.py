@@ -134,13 +134,15 @@ class GitHubClient:
             )
             raise APITimeoutError() from exc
 
-        except httpx.NetworkError as exc:
+        except (httpx.NetworkError, httpx.ProtocolError) as exc:
             logger.error(
-                "GitHub network error: %s %s",
+                "GitHub network/protocol error: %s %s: %s",
                 method,
                 url,
+                exc,
             )
             raise NetworkError() from exc
+
 
         if response.status_code in (
             httpx.codes.FORBIDDEN, 

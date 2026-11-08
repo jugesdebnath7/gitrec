@@ -17,8 +17,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # -------------------------------
 # DATABASE
 # -------------------------------
+
 class DatabaseSettings(BaseModel):
     url: PostgresDsn = Field(..., description="Postgres connection URL")
+
+    pool_size: int = Field(default=5, ge=1)
+    max_overflow: int = Field(default=10, ge=0)
+    pool_timeout: int = Field(default=30, gt=0)
+    pool_recycle: int = Field(default=1800, gt=0)
 
     @property
     def dsn(self) -> str:

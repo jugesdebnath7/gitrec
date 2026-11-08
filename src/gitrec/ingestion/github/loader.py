@@ -22,7 +22,7 @@ from src.gitrec.core.exceptions import (
 )
 from src.gitrec.ingestion.github.client import GitHubClient, JSON
 
-from .endpoints import RepositoryEndpoints, UserEndpoints
+from src.gitrec.ingestion.github.endpoints import RepositoryEndpoints, UserEndpoints
 
 
 logger = logging.getLogger(__name__)
@@ -130,7 +130,7 @@ class RepositoryLoader:
         Load repository resources.
 
         Args:
-            repository:
+            repo_endpoint:
                 Repository endpoint collection.
 
         Returns:
@@ -147,7 +147,7 @@ class RepositoryLoader:
                 "branches": repo_endpoint.branches,
                 "tags": repo_endpoint.tags,
                 "issues": repo_endpoint.issues,
-                "pulls": repo_endpoint.pulls,
+                "pulls_request": repo_endpoint.pulls,
                 "forks": repo_endpoint.forks,
                 "readme": repo_endpoint.readme,
             }
@@ -190,7 +190,7 @@ class UserLoader:
             {
                 "user": user.base,
                 "profile": user.profile,
-                "repositories": user.repositories,
+                "user_repositories": user.repositories,
                 "starred": user.starred,
                 "followers": user.followers,
                 "following": user.following,
