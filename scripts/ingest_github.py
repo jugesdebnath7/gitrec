@@ -10,7 +10,7 @@ from src.gitrec.ingestion.github.loader import (
     ResourceLoader,
     UserLoader,
 )
-from src.gitrec.ingestion.github.search import GitHubSearch
+from src.gitrec.ingestion.github.search import GitHubSearch 
 from src.gitrec.ingestion.service import IngestionService
 from src.gitrec.persistence.postgres.connection import PostgresConnection
 from src.gitrec.persistence.service import PersistenceService
